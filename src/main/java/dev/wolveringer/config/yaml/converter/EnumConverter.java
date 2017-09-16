@@ -1,7 +1,10 @@
 package dev.wolveringer.config.yaml.converter;
 
 import dev.wolveringer.config.ConfigConfiguration;
+import dev.wolveringer.config.descriptor.ConfigFieldDescriptor;
 import dev.wolveringer.config.exception.InvalidConfigException;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by wolverindev on 10.09.17.
@@ -13,7 +16,7 @@ public class EnumConverter extends ValueConverter {
     }
 
     @Override
-    public Object convertFromConfig(ConfigConfiguration cfg, Class<?> destClass, Object input) throws Exception {
+    public Object convertFromConfig(ConfigConfiguration cfg, Class<?> destClass, Type type, Object input) throws Exception {
         Enum[] constants = ((Class<Enum>) destClass).getEnumConstants();
         if(input instanceof Integer) return constants[((Integer) input).intValue()];
 
@@ -24,7 +27,7 @@ public class EnumConverter extends ValueConverter {
     }
 
     @Override
-    public Object convertFromInstance(ConfigConfiguration cfg, Object handle, Object input) throws Exception {
+    public Object convertFromInstance(ConfigConfiguration cfg, ConfigFieldDescriptor field, Object input) throws Exception {
         if(cfg.getUseEnumName() != ConfigConfiguration.EnforcementType.NONE)
             return ((Enum) input).name();
         return ((Enum) input).ordinal();

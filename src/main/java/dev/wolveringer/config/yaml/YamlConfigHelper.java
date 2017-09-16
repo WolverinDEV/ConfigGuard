@@ -35,7 +35,10 @@ public class YamlConfigHelper {
     }
 
     public static void loadConfigFromFile(YamlConfig instance, ConfigClassDescriptor cls, ConfigConfiguration cfg) throws ConfigException {
-        if(!cfg.getConfigFile().exists()) throw new ConfigNotFoundException("Could not find config file " + cfg.getConfigFile());
+        if(!cfg.getConfigFile().exists()){
+            if(!cfg.isCreateIfNotExist()) throw new ConfigNotFoundException("Could not find config file " + cfg.getConfigFile());
+            saveConfigToFile(instance, cls, cfg);
+        }
 
         String contains;
         try {
@@ -82,7 +85,7 @@ public class YamlConfigHelper {
                 Optional<ValueConverter> converter = ValueConverter.getConverter(field.getField().getType());
                 if (converter.isPresent())
                     try {
-                        value = converter.get().convertFromConfig(cfg, field.getField().getType(), value);
+                        value = converter.get().convertFromConfig(cfg, field.getField().getType(), field.getField().getGenericType(), value);
                     } catch (Exception e) {
                         throw new ValueConvertException(value, field.getField().getType(), e,
                                 "Cant convert config value for field " + field.getField().getDeclaringClass().getName() + "#" + field.getField().getName());
@@ -128,15 +131,21 @@ public class YamlConfigHelper {
             }
 
             Optional<ValueConverter> converter = ValueConverter.getConverter(field.getField().getType());
-            if (converter.isPresent())
+            if (converter.isPresent() && value != null)
                 try {
-                    value = converter.get().convertFromInstance(cfg, instance, value);
+                    value = converter.get().convertFromInstance(cfg, field, value);
                 } catch (Exception e) {
                     throw new ValueConvertException(value, field.getField().getType(), e, "Cant convert object value for field " + field.getField().getName());
                 }
 
             String path = field.getConfigPath();
-            if(value instanceof ConfigMap){
+            if(value instanceof Iterable){ //Extra handling for lists
+                for(Object elm : (Iterable) value)
+                    if(elm instanceof ConfigMap){
+                        final String fpath = path;
+                        ((ConfigMap) elm).comments.forEach((k, v) ->  comments.put(fpath + "." + k, v));
+                    }
+            } else if(value instanceof ConfigMap){
                 ConfigMap map = (ConfigMap) value;
                 final String fpath = path;
                 map.comments.forEach((k, v) ->  comments.put(fpath + "." + k, v));
@@ -153,14 +162,26 @@ public class YamlConfigHelper {
                 path =  path.substring(index + 1);
             }
 
-            if(value instanceof ConfigMap)
+            if(value instanceof Iterable){ //Extra handling for lists
+                List<Object> output = new ArrayList<>();
+                for(Object elm : (Iterable) value){
+                    if(elm instanceof ConfigMap)
+                        output.add(((ConfigMap) elm).configMap);
+                    else
+                        output.add(elm);
+                }
+                currentDeep.put(path, output);
+            } else if(value instanceof ConfigMap){
                 currentDeep.put(path, ((ConfigMap) value).configMap);
-            else
+            } else {
                 currentDeep.put(path, value);
+            }
+
 
             if(!fieldComments.isEmpty()) comments.put(field.getConfigPath(), fieldComments);
         }
 
+        System.out.println("Value map: " + valueMap + " - " + comments);
         return new ConfigMap(comments, valueMap);
     }
 
@@ -175,7 +196,7 @@ public class YamlConfigHelper {
         try {
             File target = cfg.getConfigFile();
             if(!target.exists()){
-                new File(target.getAbsolutePath()).mkdirs();
+                target.getParentFile().mkdirs();
                 target.createNewFile();
             }
             FileOutputStream fos = new FileOutputStream(target);

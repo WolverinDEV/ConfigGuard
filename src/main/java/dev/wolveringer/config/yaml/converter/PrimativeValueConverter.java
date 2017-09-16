@@ -1,7 +1,9 @@
 package dev.wolveringer.config.yaml.converter;
 
 import dev.wolveringer.config.ConfigConfiguration;
+import dev.wolveringer.config.descriptor.ConfigFieldDescriptor;
 
+import java.lang.reflect.Type;
 import java.util.HashSet;
 
 /**
@@ -25,8 +27,8 @@ public class PrimativeValueConverter extends ValueConverter {
     }
 
     @Override
-    public Object convertFromConfig(ConfigConfiguration cfg, Class<?> destClass, Object input) throws Exception {
-        switch (destClass.getSimpleName()) {
+    public Object convertFromConfig(ConfigConfiguration cfg, Class<?> target, Type type, Object input) throws Exception {
+        switch (target.getSimpleName()) {
             case "short":
                 return (input instanceof Short) ? input : new Integer((int) input).shortValue();
             case "byte":
@@ -45,7 +47,7 @@ public class PrimativeValueConverter extends ValueConverter {
     }
 
     @Override
-    public Object convertFromInstance(ConfigConfiguration cfg, Object handle, Object input) throws Exception {
+    public Object convertFromInstance(ConfigConfiguration cfg, ConfigFieldDescriptor field, Object input) throws Exception {
         return input;
     }
 }

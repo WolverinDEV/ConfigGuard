@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @CommentGenerator(generatorClass = DefaultImplementations.class, methode = "buildEnumAvailable")
-public @interface EnumAvariableListener { }
+public @interface EnumAvariableListener {
+    Class<?> targetClass() default void.class;
+}

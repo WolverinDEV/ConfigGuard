@@ -13,5 +13,14 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface CommentGenerator {
     Class generatorClass();
+
+    /**
+     * Parameter layout:
+     *  - \\<methodeName\\>(<class>java.lang.Object</class> value)
+     *  - \\<methodeName\\>(<class>java.lang.reflect.Field</class> field)
+     *  - \\<methodeName\\>(<class>java.lang.reflect.Field</class> field, <class>java.lang.Object</class> value)
+     *  - \\<methodeName\\>(<class>java.lang.reflect.Field</class> field, <class>java.lang.Object</class> value, <class>java.lang.Object</class> annonationInstance)
+     * @return
+     */
     String methode();
 }

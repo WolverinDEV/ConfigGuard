@@ -1,6 +1,5 @@
 package dev.wolveringer.config.test;
 
-import com.sun.xml.internal.ws.util.StringUtils;
 import dev.wolveringer.config.annotation.CommentGenerator;
 import dev.wolveringer.config.annotation.Comments;
 import dev.wolveringer.config.annotation.NonNull;
@@ -17,7 +16,9 @@ import lombok.ToString;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -35,12 +36,13 @@ public class YamlParseTest {
         H,
         I
     }
+
     @Getter
     @ToString
     @Comments("Hello")
     public static class TestYamlConfig extends YamlConfig {
         public TestYamlConfig() {
-            super(new File("src/test/resources/test.ymls"));
+            super(new File("src/test/resources/test.yml"));
         }
 
         @Path("test.entry")
@@ -58,29 +60,43 @@ public class YamlParseTest {
         @NonNull
         private TestEnum testEnum = TestEnum.A;
 
+        @EnumAvariableListener(targetClass = TestEnum.class)
+        private TestEnum[] testEnumArray = {TestEnum.A, TestEnum.C};
+
+        @NonNull
+        @Getter
+        private List<TestYamlValue> values = new ArrayList<>(Arrays.asList(new TestYamlValue("First list entry"), new TestYamlValue("Second list entzry!")));
+
         @Override
         protected boolean checkConfig() throws ConfigException {
-            if(testEnum == TestEnum.A) throw new InvalidConfigException(testEnum + " == " + TestEnum.A);
-            return testEnum == TestEnum.B;
+            //if(testEnum == TestEnum.A) throw new InvalidConfigException(testEnum + " == " + TestEnum.A);
+            //return testEnum == TestEnum.B;
+            return true;
         }
     }
 
     @Getter
     @ToString
     @Comments("XXYYY")
-    @RequiredArgsConstructor
     public static class TestYamlValue extends YamlConfig {
-        private final String value;
+        @Comments("Im a test string!")
+        private String ztestString = "Test string";
 
-        public String xxx = "XXX";
-        @Path("elements.yyy")
-        @Comments("i like to fuck")
-        public String yyy = "YYY";
+        @Path("xxxy")
+        private String value;
+
+        @Comments("Im a Xtest string!")
+        private String xtestString = "Test string";
+
+        public TestYamlValue(String value) {
+            this.value = value;
+        }
     }
 
     @Test
     public void testParseTestYaml() throws ConfigException {
         TestYamlConfig cfg = new TestYamlConfig();
+        cfg.values.clear();
         cfg.load();
         System.out.println(cfg);
     }
@@ -92,7 +108,7 @@ public class YamlParseTest {
         System.out.println(cfg);
     }
 
-    public static String generateTestComment(){
+    public static String generateTestComment() {
         System.out.println("Generate!");
         return "Avariable stuff: " + YamlCommentHelper.join(Arrays.asList(TestEnum.values()).stream().map(e -> e.name()).collect(Collectors.toList()), ", ");
     }

@@ -29,7 +29,16 @@ public class YamlCommentHelper {
 
         StringBuilder writeLines = new StringBuilder();
         comments.getOrDefault("", new ArrayList<>()).forEach(e -> writeLines.append("#" + e + "\n"));
-        for (String line : yamlString.split("\n")) {
+        for (final String originalLine : yamlString.split("\n")) {
+            String line = originalLine;
+            int index = 0;
+            while(line.length() >= index){
+                if(line.charAt(index) == '-'){
+                    line = line.replaceFirst("-", " ");
+                } else if(line.charAt(index) != ' ') break;
+                index++;
+            }
+
             if (line.startsWith(new String(new char[depth]).replace("\0", " "))) {
                 keyChain.add(line.split(":")[0].trim());
                 depth = depth + 2;
@@ -54,7 +63,7 @@ public class YamlCommentHelper {
                         depth = 2;
                     } else {
                         ArrayList<String> temp = new ArrayList<>();
-                        int index = 0;
+                        index = 0;
                         for (int i = 0; i < spaces; i = i + 2, index++) {
                             temp.add(keyChain.get(index));
                         }
@@ -75,6 +84,7 @@ public class YamlCommentHelper {
                 search = "";
             }
 
+            System.out.println("Searching for " + search);
             if (comments.containsKey(search)) {
                 for (String comment : comments.get(search)) {
                     writeLines.append(new String(new char[depth - 2]).replace("\0", " "));
@@ -84,7 +94,7 @@ public class YamlCommentHelper {
                 }
             }
 
-            writeLines.append(line);
+            writeLines.append(originalLine);
             writeLines.append("\n");
         }
 

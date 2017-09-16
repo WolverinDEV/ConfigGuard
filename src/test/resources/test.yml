@@ -4,18 +4,20 @@ test:
   # World1
   # XXYYY
   entry:
-    elements:
-      # i like to fuck
-      yyy: YYY
-    xxx: XXX
+    # Im a Xtest string!
+    xtestString: Test string
+    # Im a test string!
+    ztestString: Test string
+    xxxy: This is a test entry!
   # Hello
   # World2
   # XXYYY
   entry2:
-    elements:
-      # i like to fuck
-      yyy: ZZZ
-    xxx: PPP
+    # Im a Xtest string!
+    xtestString: Test string
+    # Im a test string!
+    ztestString: Test string
+    xxxy: This is the second test entry!
   # Available entries: 
   #  [0] A
   #  [1] B
@@ -27,3 +29,29 @@ test:
   #  [7] H
   #  [8] I
   enum: A
+values:
+  # Im a Xtest string!
+- xtestString: Test string
+  # Im a test string!
+  ztestString: Test string
+  xxxy: First list entry
+  # Im a Xtest string!
+- xtestString: Test string
+  # Im a test string!
+  ztestString: Test string
+  xxxy: Second list entzry!
+# Available entries: 
+#  [0] A
+#  [1] B
+#  [2] C
+#  [3] D
+#  [4] E
+#  [5] F
+#  [6] G
+#  [7] H
+#  [8] I
+testEnumArray:
+- A1
+- B
+- C
+- D

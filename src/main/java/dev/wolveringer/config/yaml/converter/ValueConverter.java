@@ -1,9 +1,11 @@
 package dev.wolveringer.config.yaml.converter;
 
 import dev.wolveringer.config.ConfigConfiguration;
+import dev.wolveringer.config.descriptor.ConfigFieldDescriptor;
 import lombok.NonNull;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,10 +33,12 @@ public abstract class ValueConverter {
         registerConverter(new PrimativeValueConverter());
         registerConverter(new ConfigObjectConverter());
         registerConverter(new EnumConverter());
+        registerConverter(new ListObjectConverter());
+        registerConverter(new ArrayObjectConverter());
     }
 
     public abstract boolean supports(Class<?> type);
 
-    public abstract Object convertFromConfig(ConfigConfiguration cfg, Class<?> destClass,@NonNull Object input) throws Exception;
-    public abstract Object convertFromInstance(ConfigConfiguration cfg, Object handle,@NonNull Object input) throws Exception;
+    public abstract Object convertFromConfig(ConfigConfiguration cfg, Class<?> target, Type type, @NonNull Object input) throws Exception;
+    public abstract Object convertFromInstance(ConfigConfiguration cfg, ConfigFieldDescriptor field, @NonNull Object input) throws Exception;
 }

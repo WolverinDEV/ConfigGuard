@@ -46,11 +46,14 @@ public class ConfigFieldDescriptor {
         ArrayList<String> output = new ArrayList<>();
 
         CommentGenerator gen = null;
-        if(field.isAnnotationPresent(CommentGenerator.class)) gen = field.getAnnotation(CommentGenerator.class);
+        Object annoClass = null;
+
+        if(field.isAnnotationPresent(CommentGenerator.class)) annoClass = (gen = field.getAnnotation(CommentGenerator.class));
         else { //For "extends" like an interface (Used at default annonations)
             for(Annotation anno : field.getAnnotations()){
                 if(anno.annotationType().isAnnotationPresent(CommentGenerator.class)){
                     gen = anno.annotationType().getAnnotation(CommentGenerator.class);
+                    annoClass = anno;
                     break;
                 }
             }
@@ -66,7 +69,10 @@ public class ConfigFieldDescriptor {
                 boolean success = false;
                 for(Method m : methods){
                     if(m.getName().equalsIgnoreCase(gen.methode())){
-                        if(m.getParameterTypes().length == 2){
+                        if(m.getParameterTypes().length == 3){
+                            success = true;
+                            result = m.invoke(null, field, value, annoClass);
+                        } else if(m.getParameterTypes().length == 2){
                             success = true;
                             result = m.invoke(null, field, value);
                         } else if(m.getParameterTypes().length == 1){

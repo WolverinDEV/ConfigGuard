@@ -24,6 +24,8 @@ public class ConfigConfiguration {
     }
     private final @NonNull File configFile;
 
+    private boolean createIfNotExist = true;
+
     private EnforcementType configurationAnnonation = EnforcementType.PREFERRED;
     private EnforcementType pathAnnonation = EnforcementType.PREFERRED;
 

@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
  * Created by wolverindev on 09.09.17.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.LOCAL_VARIABLE, ElementType.TYPE_USE})
 public @interface NonNull {
 }
