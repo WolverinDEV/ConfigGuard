@@ -51,7 +51,5 @@ values:
 #  [7] H
 #  [8] I
 testEnumArray:
-- A1
-- B
+- A
 - C
-- D
