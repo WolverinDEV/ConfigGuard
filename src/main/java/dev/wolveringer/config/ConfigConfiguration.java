@@ -1,6 +1,7 @@
 package dev.wolveringer.config;
 
 import lombok.*;
+import lombok.experimental.Wither;
 
 import java.io.File;
 
@@ -11,8 +12,12 @@ import java.io.File;
 @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
-@Builder
+@Wither
 public class ConfigConfiguration {
+    public interface DebugFunction {
+        void log(String message);
+    }
+
     @RequiredArgsConstructor
     @Getter
     public enum EnforcementType {
@@ -25,10 +30,12 @@ public class ConfigConfiguration {
     private final @NonNull File configFile;
 
     private boolean createIfNotExist = true;
+    private DebugFunction debug = message -> {};
 
     private EnforcementType configurationAnnonation = EnforcementType.PREFERRED;
     private EnforcementType pathAnnonation = EnforcementType.PREFERRED;
 
     private EnforcementType callConstructor = EnforcementType.PREFERRED;
     private EnforcementType useEnumName = EnforcementType.PREFERRED;
+
 }

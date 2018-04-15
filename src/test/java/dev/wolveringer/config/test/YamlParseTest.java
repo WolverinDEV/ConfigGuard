@@ -9,10 +9,7 @@ import dev.wolveringer.config.exception.ConfigException;
 import dev.wolveringer.config.exception.InvalidConfigException;
 import dev.wolveringer.config.yaml.YamlCommentHelper;
 import dev.wolveringer.config.yaml.YamlConfig;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by wolverindev on 09.09.17.
  */
 public class YamlParseTest {
-    public static enum TestEnum {
+    public enum TestEnum {
         A,
         B,
         C,
@@ -67,6 +64,8 @@ public class YamlParseTest {
         @Getter
         private List<TestYamlValue> values = new ArrayList<>(Arrays.asList(new TestYamlValue("First list entry"), new TestYamlValue("Second list entzry!")));
 
+        private TestYamlChildValue cvalue = new TestYamlChildValue("XXX");
+
         @Override
         protected boolean checkConfig() throws ConfigException {
             //if(testEnum == TestEnum.A) throw new InvalidConfigException(testEnum + " == " + TestEnum.A);
@@ -90,6 +89,17 @@ public class YamlParseTest {
 
         public TestYamlValue(String value) {
             this.value = value;
+        }
+    }
+
+    @Getter
+    @ToString(callSuper = true)
+    @Comments("XXYYY")
+    public static class TestYamlChildValue extends TestYamlValue {
+        private String extraData = "";
+
+        public TestYamlChildValue(String value) {
+            super(value);
         }
     }
 

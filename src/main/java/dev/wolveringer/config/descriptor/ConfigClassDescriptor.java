@@ -32,8 +32,11 @@ public class ConfigClassDescriptor {
 
     public ConfigClassDescriptor parse() {
         List<Field> clsFields = new ArrayList<>();
-        clsFields.addAll(Arrays.asList(clazz.getFields()));
-        clsFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
+        Class current = clazz;
+        do {
+            clsFields.addAll(Arrays.asList(current.getFields()));
+            clsFields.addAll(Arrays.asList(current.getDeclaredFields()));
+        } while((current = current.getSuperclass()) != null);
 
         clsFields.forEach(e -> fields.add(new ConfigFieldDescriptor(e)));
         return this;

@@ -15,7 +15,7 @@ import java.io.File;
  * Created by wolverindev on 09.09.17.
  */
 public class YamlConfig extends AbstractConfig implements Config {
-    private ConfigConfiguration configuration;
+    private transient ConfigConfiguration configuration;
 
     /**
      * Use this class as a segment structure class

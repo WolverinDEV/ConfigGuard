@@ -63,6 +63,7 @@ public class YamlConfigHelper {
 
             String path = field.getConfigPath();
             Object value = null;
+            boolean hasValue = false;
 
             Map currentDeep = yamlMap;
 
@@ -79,6 +80,7 @@ public class YamlConfigHelper {
             }
             if(index != -2){
                 value = currentDeep.get(path);
+                hasValue = currentDeep.containsKey(path);
             }
 
             if(value != null){
@@ -94,8 +96,16 @@ public class YamlConfigHelper {
 
             if(value == null && field.requireValue())
                 throw new MissingConfigValueException("Missing config value for key: " + field.getConfigPath());
-
+            if(!hasValue) {
+                cfg.getDebug().log("Ignoring field " + field.getField() + "|" + field.getConfigPath() + ". It isnt set in config");
+                continue;
+            }
+            if(value == null) {
+                cfg.getDebug().log("Using default null value for " + field.getField());
+                value = field.nullValue();
+            }
             try {
+                cfg.getDebug().log("Set " + field.getField() + " to " + value);
                 field.setValue(instance, value);
             } catch (IllegalAccessException e) {
                 throw new InvalidConfigClassException("Cant access field " + field.getField().getName() + " in class " + field.getField().getDeclaringClass().getName());

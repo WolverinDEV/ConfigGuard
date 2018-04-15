@@ -123,4 +123,15 @@ public class ConfigFieldDescriptor {
         if(!field.isAccessible()) field.setAccessible(true);
         field.set(handle, obj);
     }
+
+    public Object nullValue() {
+        if(this.field.getType() == byte.class) return Byte.valueOf((byte) 0);
+        if(this.field.getType() == short.class) return Short.valueOf((short) 0);
+        if(this.field.getType() == char.class) return Character.valueOf((char) 0);
+        if(this.field.getType() == int.class) return Integer.valueOf(0);
+        if(this.field.getType() == long.class) return Long.valueOf(0);
+        if(this.field.getType() == float.class) return Float.valueOf(0);
+        if(this.field.getType() == double.class) return Double.valueOf(0);
+        return null;
+    }
 }

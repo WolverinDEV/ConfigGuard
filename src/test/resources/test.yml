@@ -1,4 +1,12 @@
 #Hello
+# XXYYY
+cvalue:
+  # Im a Xtest string!
+  xtestString: Test string
+  extraData: ''
+  # Im a test string!
+  ztestString: Test string
+  xxxy: XXX
 test:
   # Hello
   # World1
